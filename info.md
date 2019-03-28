@@ -62,7 +62,7 @@ Route::get('/repetir/{nome}/{n}', function ($nome, $n){
 
   Exemplo de parâmetros restritos a um tipo de valor:
 
-  Utiliza a função where() para restringir parâmetros, no caso a variável 'n', se limitará aos números de 0 a 9, podendo ter mais de uma casa (+).
+  Utiliza a função `where()` para restringir parâmetros, no caso a variável 'n', se limitará aos números de 0 a 9, podendo ter mais de uma casa (+).
 
   No caso do parâmetro 'nome', ele deverá ser uma string, podendo ter apenas letras de "A" a "Z" maiúsculas e minúsculas, podendo também ter mais de um caractere na string.
 
@@ -77,7 +77,7 @@ Route::get('/seunomecomregra/{nome}/{n}', function ($nome, $n){
 # Agrupamento de rotas
   Agrupar outras rotas (filhas), em uma rota principal (pai). Criando uma hierarquia de rotas, colocando uma rota comum a todos, como a rota principal.
 
-  Usa a função prefix() para criar a rota principal, e depois a função group(), passando uma função anônima, e dentro dessa função anônima, estará localizado as outras rotas (filhas).
+  Usa a função `prefix()` para criar a rota principal, e depois a função `group()`, passando uma função anônima, e dentro dessa função anônima, estará localizado as outras rotas (filhas).
 ```php
 Route::prefix('app')->group(function (){
   Route::get('/', function (){
