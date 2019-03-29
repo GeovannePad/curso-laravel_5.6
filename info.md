@@ -41,6 +41,7 @@
   No exemplo abaixo, ao entrar na rota nome, você deverá passar, os parâmetros necessários que está rota espera, no caso {nome} e {sobrenome} (usa-se {} para definir parâmetros). E lembre-se de também passar estes parâmetros para a função anônima da rota em questão.
 
   Exemplo de rota com parâmetros:
+
 ```php
 Route::get('/nome/{nome}/{sobrenome}', function ($nome, $sobrenome){
     return "<h1>Ola, $nome $sobrenome!</h1>";
@@ -48,6 +49,7 @@ Route::get('/nome/{nome}/{sobrenome}', function ($nome, $sobrenome){
 ```
 
   Exemplo de rota com parâmetros de tipo diferente, no caso, ele recebe um número inteiro e uma string, porém, caso você passar um valor diferente de inteiro no parâmetro {n} irá ocorrer um erro, pois ele esperava um número inteiro.
+
 ```php
 Route::get('/repetir/{nome}/{n}', function ($nome, $n){
     for($i = 0; $i < $n; $i++){
@@ -74,10 +76,23 @@ Route::get('/seunomecomregra/{nome}/{n}', function ($nome, $n){
 })->where('n', '[0-9]+')->where('nome', '[A-Za-z]+');
 ```
 
+No caso abaixo, o parâmetro não será necessariamente obrigatório, porém quando não passado, será atribuido um valor 'null' para ele (porém, você pode colocar qualquer tipo de dado ou valor para ser atribuido).
+
+```php
+Route::get('/seunomesemregra/{nome?}', function ($nome=null){
+    if (isset($nome)) {
+        echo "<h1>Ola, $nome!</h1>";
+    } else {
+        echo "Você não passou nenhum nome";
+    }
+});
+```
+
 # Agrupamento de rotas
   Agrupar outras rotas (filhas), em uma rota principal (pai). Criando uma hierarquia de rotas, colocando uma rota comum a todos, como a rota principal.
 
   Usa a função `prefix()` para criar a rota principal, e depois a função `group()`, passando uma função anônima, e dentro dessa função anônima, estará localizado as outras rotas (filhas).
+
 ```php
 Route::prefix('app')->group(function (){
   Route::get('/', function (){
@@ -93,3 +108,31 @@ Route::prefix('app')->group(function (){
   });
 });
 ```
+
+# Redirecionamento entre rotas 
+
+    Função `redirect()` que redireciona uma rota para outra rota existente no projeto.
+
+    Redireciona '/aqui', para o '/ola'. Com o código 301, que informa ao proxy e ao navegador que a pessoa está usando, que o '/aqui' foi permanentemente movido pro '/ola', falando para ele buscar o conteúdo do '/aqui' no '/ola'.
+
+    ```php
+    Route::redirect('/aqui', '/ola', 301);
+    ```
+
+    Função `view()`, que redireciona de uma rota para uma view de uma maneira mais simples.
+
+    ```php
+    Route::view('/hello', 'hello');
+    ```
+
+    Mesma função, porém passando parâmetros(variáveis), por meio de um array (terceiro parâmetro) com dados, que serão exibidos na view 'hellonome'.
+
+    ```php
+    Route::view('/viewnome', 'hellonome', ['nome'=>'João', 'sobrenome'=>'Silva']);
+    ```
+
+# Métodos HTTP
+
+    O protocolo HTTP permite que nós utilizamos, na requisição HTTP, vários métodos, que são 9 no total. No link abaixo, há informações de cada método existente.
+    
+    [Métodos HTTP]([https://link](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods))
