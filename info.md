@@ -135,4 +135,4 @@ Route::view('/viewnome', 'hellonome', ['nome'=>'João', 'sobrenome'=>'Silva']);
 
 O protocolo HTTP permite que nós utilizamos, na requisição HTTP, vários métodos, que são 9 no total. No link abaixo, há informações de cada método existente.
 
-[Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods/GET)
+[Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods)
