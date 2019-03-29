@@ -115,24 +115,24 @@ Route::prefix('app')->group(function (){
 
     Redireciona '/aqui', para o '/ola'. Com o código 301, que informa ao proxy e ao navegador que a pessoa está usando, que o '/aqui' foi permanentemente movido pro '/ola', falando para ele buscar o conteúdo do '/aqui' no '/ola'.
 
-    ```php
-    Route::redirect('/aqui', '/ola', 301);
-    ```
+```php
+Route::redirect('/aqui', '/ola', 301);
+```
 
     Função `view()`, que redireciona de uma rota para uma view de uma maneira mais simples.
 
-    ```php
-    Route::view('/hello', 'hello');
-    ```
+```php
+Route::view('/hello', 'hello');
+```
 
     Mesma função, porém passando parâmetros(variáveis), por meio de um array (terceiro parâmetro) com dados, que serão exibidos na view 'hellonome'.
 
-    ```php
-    Route::view('/viewnome', 'hellonome', ['nome'=>'João', 'sobrenome'=>'Silva']);
-    ```
+```php
+Route::view('/viewnome', 'hellonome', ['nome'=>'João', 'sobrenome'=>'Silva']);
+```
 
 # Métodos HTTP
 
     O protocolo HTTP permite que nós utilizamos, na requisição HTTP, vários métodos, que são 9 no total. No link abaixo, há informações de cada método existente.
-    
-    [Métodos HTTP]([https://link](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods))
+
+    [Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods)
