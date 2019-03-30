@@ -146,7 +146,7 @@ Obs: Para usar outros métodos, é só alterar a função `post()` para as outra
 
 [Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods)
 
-###Código de status de respostas HTTP
+##Código de status de respostas HTTP
 
 Os códigos de status indicam se uma requisição HTTP foi corretamente concluída. As respostas são agrupas em 5 classes: respostas de informação, respostas de sucesso, redirecionamentos, erros do cliente e erros do servidor.
 
