@@ -142,11 +142,12 @@ Route::post('/rest/hello', function () {
     return "Hello (POST)";
 });
 ```
+
 Obs: Para usar outros métodos, é só alterar a função `post()` para as outras funcões dos métodos, como exemplo, `delete()`, `put()`, `patch()` etc. Existe uma função para cada método (GET, POST, PUT, DELETE, PATCH, OPTIONS).
 
 [Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods)
 
-##Código de status de respostas HTTP
+## Código de status de respostas HTTP
 
 Os códigos de status indicam se uma requisição HTTP foi corretamente concluída. As respostas são agrupas em 5 classes: respostas de informação, respostas de sucesso, redirecionamentos, erros do cliente e erros do servidor.
 
@@ -183,7 +184,7 @@ Route::any('/rest/hello3', function () {
 });
 ```
 
-##Nomeando rotas
+## Nomeando rotas
 
 Ao mudar o nome de uma ou mais rotas, você tem que se preocupar em alterar em todos os outros lugares que ela existir, se tornando um processo cansativo, por isso a gente pode nomear uma rota utilizando a função `name()`, determinando um nome padrão para aquela rota e mesmo se posteriormente alguém mudar o nome da rota, não irá ocorrer problema algum. 
 Ele basicamente consegue acessar a rota independendo se o nome dela alterou ou não.
