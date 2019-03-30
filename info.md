@@ -36,9 +36,9 @@
 
   Comando -> php artisan route:list, mostra todas as rotas que seu projeto possui.
 
-# Parâmetros em rotas
+## Parâmetros em rotas
   São valores que podem ser passados, na hora de digitar a rota.
-  No exemplo abaixo, ao entrar na rota nome, você deverá passar, os parâmetros necessários que está rota espera, no caso {nome} e {sobrenome} (usa-se {} para definir parâmetros). E lembre-se de também passar estes parâmetros para a função anônima da rota em questão.
+  No exemplo abaixo, ao entrar na rota nome, você deverá passar, os parâmetros necessários que está rota espera, no caso {nome} e {sobrenome} (usa-se {} para definir parâmetros em uma rota). E lembre-se de também passar estes parâmetros para a função anônima da rota em questão.
 
   Exemplo de rota com parâmetros:
 
@@ -58,7 +58,7 @@ Route::get('/repetir/{nome}/{n}', function ($nome, $n){
 });
 ``` 
 
-# Parâmetros opcionais e restritos
+## Parâmetros opcionais e restritos
 
   Restringir os tipos de valores passados nos parâmetros pelas rotas
 
@@ -76,7 +76,7 @@ Route::get('/seunomecomregra/{nome}/{n}', function ($nome, $n){
 })->where('n', '[0-9]+')->where('nome', '[A-Za-z]+');
 ```
 
-No caso abaixo, o parâmetro não será necessariamente obrigatório, porém quando não passado, será atribuido um valor 'null' para ele (porém, você pode colocar qualquer tipo de dado ou valor para ser atribuido).
+No caso abaixo, o parâmetro não será necessariamente obrigatório, porém quando não passado, será atribuido um valor 'null' para ele (porém, você pode colocar qualquer tipo de dado ou valor para ser atribuido caso o parâmetro não seja passado).
 
 ```php
 Route::get('/seunomesemregra/{nome?}', function ($nome=null){
@@ -88,7 +88,7 @@ Route::get('/seunomesemregra/{nome?}', function ($nome=null){
 });
 ```
 
-# Agrupamento de rotas
+## Agrupamento de rotas
   Agrupar outras rotas (filhas), em uma rota principal (pai). Criando uma hierarquia de rotas, colocando uma rota comum a todos, como a rota principal.
 
   Usa a função `prefix()` para criar a rota principal, e depois a função `group()`, passando uma função anônima, e dentro dessa função anônima, estará localizado as outras rotas (filhas).
@@ -109,7 +109,7 @@ Route::prefix('app')->group(function (){
 });
 ```
 
-# Redirecionamento entre rotas 
+## Redirecionamentos em rotas 
 
 Função `redirect()` que redireciona uma rota para outra rota existente no projeto.
 
@@ -131,8 +131,91 @@ Mesma função, porém passando parâmetros(variáveis), por meio de um array (t
 Route::view('/viewnome', 'hellonome', ['nome'=>'João', 'sobrenome'=>'Silva']);
 ```
 
-# Métodos HTTP
+## Métodos HTTP
 
 O protocolo HTTP permite que nós utilizamos, na requisição HTTP, vários métodos, que são 9 no total. No link abaixo, há informações de cada método existente.
 
+Exemplo de uma rota POST:
+
+```php
+Route::post('/rest/hello', function () {
+    return "Hello (POST)";
+});
+```
+Obs: Para usar outros métodos, é só alterar a função `post()` para as outras funcões dos métodos, como exemplo, `delete()`, `put()`, `patch()` etc. Existe uma função para cada método (GET, POST, PUT, DELETE, PATCH, OPTIONS).
+
 [Métodos HTTP](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Methods)
+
+###Código de status de respostas HTTP
+
+Os códigos de status indicam se uma requisição HTTP foi corretamente concluída. As respostas são agrupas em 5 classes: respostas de informação, respostas de sucesso, redirecionamentos, erros do cliente e erros do servidor.
+
+[Códigos de status](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status)
+
+Middleware VerifyCsrfToken.php = Faz uma verificação de segurança do token csrf, utilizado quando você usa outras requisições sem ser a GET. Bloqueando a requisição, caso não possuir o token.
+
+Maneira para coletar os dados de uma formulário POST:
+
+```php
+Route::post('/rest/imprimir', function (Request $req) {
+    $nome = $req->input('nome');
+    $idade = $req->input('idade');
+    return "Hello $nome ($idade) !! (POST)";
+});
+```
+
+Lembre-se de adicionar a namespace: `use Illuminate\Http\Request;` para poder utilizar essa maneira anterior.
+
+Para atender duas ou mais tipos de requisição em uma única rota, você deve utilizar a função `match()`:
+
+Neste caso a rota '/rest/hello2', estará atendendo o método GET e POST. Além do método HEAD (padrão em todas as rotas).
+```php
+Route::match(['get', 'post'], '/rest/hello2', function () {
+    return "Hello World 2";
+});
+```
+
+Para atender qualquer tipo de requisição em uma rota específica, você deve utilizar a função `any()`, estrutura parecida com a padrão:
+
+```php
+Route::any('/rest/hello3', function () {
+    return "Hello World 3";
+});
+```
+
+##Nomeando rotas
+
+Ao mudar o nome de uma ou mais rotas, você tem que se preocupar em alterar em todos os outros lugares que ela existir, se tornando um processo cansativo, por isso a gente pode nomear uma rota utilizando a função `name()`, determinando um nome padrão para aquela rota e mesmo se posteriormente alguém mudar o nome da rota, não irá ocorrer problema algum. 
+Ele basicamente consegue acessar a rota independendo se o nome dela alterou ou não.
+
+Exemplo:
+
+Foi atribuido para a rota '/produtos' o nome de 'meusprodutos'.
+```php
+Route::get('/produtos', function(){
+    echo "<h1>Produtos</h1>";
+    echo "<ol>";
+    echo "<li> Notebook </li>";
+    echo "<li> Impressora </li>";
+    echo "<li> Mouse </li>";
+    echo "</ol>";
+})->name("meusprodutos");
+```
+
+Para acessar a rota pelo nome em outro lugar do código, você precisa utilizar a função `route()` do laravel.
+Neste caso irá armzenar o link da rota, na variável `$url`.
+```php
+Route::get('/linkprodutos', function(){
+    $url = route('meusprodutos');
+    echo "<a href=\"$url\"> Meus Produtos </a>";
+});
+```
+
+Redirecionando uma rota para outra rota utilizando a função `redirect()`, no caso a rota de nome 'meusprodutos' (/produtos).
+```php
+Route::get('/redirecionarprodutos', function () {
+    return redirect()->route('meusprodutos');
+});
+```
+
+Obs: Mesmo se alterar o nome da rota '/produtos', para '/produtos1' ou qualquer nome, nenhuma dessas outras rotas '/linkprodutos' ou '/redirecionarprodutos' seram afetadas, por conta delas estarem utilizando o nome da rota '/produtos', que é 'meusprodutos'.
