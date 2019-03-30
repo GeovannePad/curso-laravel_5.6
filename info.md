@@ -204,7 +204,7 @@ Route::get('/produtos', function(){
 ```
 
 Para acessar a rota pelo nome em outro lugar do código, você precisa utilizar a função `route()` do laravel.
-Neste caso irá armzenar o link da rota, na variável `$url`.
+Neste caso irá armazenar o link da rota, na variável `$url`.
 ```php
 Route::get('/linkprodutos', function(){
     $url = route('meusprodutos');
