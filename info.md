@@ -252,7 +252,7 @@ Como segundo parâmetro na hora de criar a rota você usa o "nome_do_controller@
 
 ## Passando parâmetros a controladores
 
-Para passar parâmetros a um controlador é simples, você apenas deve usar a maneira a seguir:
+Para passar parâmetros a um controlador por uma rota GET é simples, você apenas deve usar a maneira a seguir:
 
 ```php
 Route::get('/multiplicar/{n1}/{n2}', 'MeuControlador@multiplicar');
