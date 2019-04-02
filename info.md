@@ -220,3 +220,50 @@ Route::get('/redirecionarprodutos', function () {
 ```
 
 Obs: Mesmo se alterar o nome da rota '/produtos', para '/produtos1' ou qualquer nome, nenhuma dessas outras rotas '/linkprodutos' ou '/redirecionarprodutos' seram afetadas, por conta delas estarem utilizando o nome da rota '/produtos', que é 'meusprodutos'.
+
+# Controladores
+
+Antes de tudo, é bom entender como o Laravel funciona através da arquitetura MVC.
+MVC é nada mais que um padrão de arquitetura de software, separando sua aplicação em 3 camadas. A camada de interação do usuário(view), a camada de manipulação dos dados(model) e a camada de controle(controller).
+
+Model = Sempre que você pensar em manipulação de dados, pense em model. Ele é responsável pela leitura e escrita de dados, e também de suas validações.
+
+View = Simples: a camada de interação do usuáriop. Ela apenas faz a exibição dos dados, sendo ela por meio de HTML ou XML.
+
+Controller = O responsável por receber todas as requisições do usuário. Seus métodos chamados actions são responsáveis por uma página, controlando qual model usar e qual view será mostrado ao usuário.
+
+Diálogo das camadas
+
+View: Fala Controller ! O usuário acabou de pedir para acessar o Facebook ! Pega os dados de login dele ai. Controller: Blz. Já te mando a resposta. Ai model, meu parceiro, toma esses dados de login e verifica se ele loga. Model: Os dados são válidos. Mandando a resposta de login. Controller: Blz. View, o usuário informou os dados corretos. Vou mandar pra vc os dados dele e você carrega a página de perfil. View: Vlw. Mostrando ao usuário…
+
+Request(HTTP) -> Controller -> Model -> Controller(com dados) -> View -> Response(HTML, XML)
+
+Método para criar um controlador(controller) pela linha de comando com o Artisan:
+
+`php artisan make:controller (nome)`
+
+Para chamar um método de um controller, linkando uma rota com um controlador, você precisa fazer da maneira abaixo:
+
+```php
+Route::get('/nome', 'MeuControlador@getNome');
+```
+
+Como segundo parâmetro na hora de criar a rota você usa o "nome_do_controller@nome_do_método".
+
+## Passando parâmetros a controladores
+
+Para passar parâmetros a um controlador é simples, você apenas deve usar a maneira a seguir:
+
+```php
+Route::get('/multiplicar/{n1}/{n2}', 'MeuControlador@multiplicar');
+```
+
+Quando você linka, um método de um controlador a uma rota, o próprio Laravel vai entender que ele deve mandar os parâmetros passados a essa rota para o controlador, porém você deve declarar no controlador que você está recebendo os parâmetros:
+
+Neste caso, ao passar o n1 e n2 na rota e chamar o método multiplicar, declarando no método quantos parâmetros ele vai receber, o Laravel vai realizar todo o processo já, passando os valores e executando o código do método escolhido. (Lembre-se de passar os parâmetros, pois esses não são parâmetros opcionais, mas sim obrigatórios)
+
+```php
+public function multiplicar($n1, $n2) {
+        return $n1 * $n2;
+    }
+```
