@@ -267,3 +267,35 @@ public function multiplicar($n1, $n2) {
         return $n1 * $n2;
     }
 ```
+
+## Requisições HTTP em controladores
+
+Utilizando o comando: `php artisan make:controller ClienteController --resource`, irá criar um controller um pouco mais completo, contendo métodos específicos para cada ação/requisição.
+
+O método index, é como se fosse o '/clientes', por exemplo, exibirá uma lista com todos os clientes registrados. É um tipo de "landing page" para a área de manejo dos clientes.
+
+O método create, irá ser chamado quando precisar criar algo novo, por exemplo, um cliente, no caso irá chamar um formulário para se colocar os dados de um novo cliente.
+
+O método store, é o método que vai receber novos dados para criar um novo resource, no caso, os dados de um novo cliente, salvando em um banco de dados.
+
+O método show, ele vai ser chamado quando será preciso exibir um determinado resource(cliente), por exemplo, exibir(show) o cliente de ID=50.
+
+O método edit, vai receber um chamado para exibir um formulário ao usuário para editar(edit) os dados de um determinado cliente.
+
+O método update, vai receber os novos dados, junto com o identificador desse cliente para então fazer as alterações(update) num banco de dados, por exemplo.
+
+O método destroy, é chamado quando há uma solitação para excluir um resource, junto dele, seus dados.
+
+Tip: Para utilizar o método update, o laravel utiliza a requisição PUT ou PATCH, porém um formulário não identifica isso, então é necessário criar um input de nome '_method', com o valor de PUT ou PATCH para poder funcionar. Mandando os dados do formulário pelo POST e recebendo por PUT e PATCH pelo laravel.
+
+Caso queira adicionar uma outra rota, com uma requisição da sua escolha, basta apenas, criar a rota desta maneira `Route::post('/cliente/requisitar', 'ClienteController@requisitar');` e então linkar com o método que você tenha criado dentro do controlador ClienteController.
+
+# Views
+
+É onde o usuário irá interagir, é o V da arquitetura MVC.
+As views ficam localizas na pasta resource/views.
+Ao criar uma view, você deve manter um padrão: nomedaview.blade.php
+Nela pode conter código PHP junto de código HTML, porém o PHP será processado pelo servidor antes de aparecer para o usuário final.
+
+Para chamar uma view, você deve usar a função `view('nomedaview')`.
+Obs: Para chamar alguma determinada view não há necessidade de colocar a sua extensão, mas sim, apenas seu nome.

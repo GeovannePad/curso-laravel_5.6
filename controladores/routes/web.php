@@ -22,3 +22,7 @@ Route::get('/idade', 'MeuControlador@getIdade');
 Route::get('/multiplicar/{n1}/{n2}', 'MeuControlador@multiplicar');
 
 Route::get('/chamarnome/{id}', 'MeuControlador@getNomeById');
+
+Route::resource('/cliente', 'ClienteController');
+
+Route::post('/cliente/requisitar', 'ClienteController@requisitar');
