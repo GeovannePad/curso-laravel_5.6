@@ -299,3 +299,132 @@ Nela pode conter código PHP junto de código HTML, porém o PHP será processad
 
 Para chamar uma view, você deve usar a função `view('nomedaview')`.
 Obs: Para chamar alguma determinada view não há necessidade de colocar a sua extensão, mas sim, apenas seu nome.
+
+## Passando parâmetros a views
+
+É possível passar parâmetros/variáveis contendo valores a suas views, para então exibir esses dados para o usuário, há 4 métodos que podem ser utilizados para realizar esse processo.
+
+1º: Com a função `with()`, sendo;
+    O 1º param, o nome da variável.
+    O 2º param, o valor da variável.
+
+```php
+Route::get('/ola', function () {
+    return view("minhaview")
+        ->with('nome', 'João')
+        ->with('sobrenome', 'Silva');
+    
+});
+```
+
+2º: Passando os valores pela rota, no caso, a rota '/ola'. Seguindo as regras já faladas na sessão de rotas.
+
+```php
+Route::get('/ola/{nome}/{sobrenome}', function ($nome, $sobrenome) {
+    return view("minhaview")
+        ->with('nome', $nome)
+        ->with('sobrenome', $sobrenome);
+});
+```
+
+3º: Passando os dados como um array associativo, através do 2º parâmetro da função `view()`.
+
+```php
+Route::get('/ola/{nome}/{sobrenome}', function ($nome, $sobrenome) {
+    $parametros = ['nome'=>$nome,'sobrenome'=>$sobrenome];
+    return view('minhaview', $parametros);
+});
+```
+
+4º: Utilizando a função `compact()` do php, criando um array associativo.
+    Neste caso, é necessário colocar os mesmos nomes que estão vindo pela função anônima, caso contrário a função não conseguirá criar o array.
+
+    Não há necessidade de colocar o $ nos nomes na função `compact()`.
+    
+```php
+Route::get('/ola/{nome}/{sobrenome}', function ($nome, $sobrenome) {
+    return view('minhaview', compact('nome', 'sobrenome'));
+});
+```
+
+Acima, no exemplo, a função `compact()` irá criar um array associativo, parecido com este:
+
+```php
+$data=[
+'nome'=>'João',
+'sobrenome'=>'Silva'
+];
+```
+
+Obs: Dados fictícios, os dados reais serão os valores passados através da rota.
+
+## Verificando se uma view existe
+
+O Laravel fornece uma função estática nativa que permite verificar se determinada view existe ou não.
+
+No exemplo, utilizando a função estática `View::exists()`, será verificado se a view email existe ou não, e caso existir, executará o primeiro bloco condicional, retornando a view email, com o array associativo contendo o email passado pela rota.
+Ou executará o segundo bloco de código, que retornará uma view erro, dizendo que determinada view não existe.
+
+Função `compact()` cria um array, baseado na quantidade de parâmetros passados na função.
+
+Caso exista a view, a função retorna true, caso contrário, false.
+
+```php
+Route::get('/email/{email}', function ($email) {
+    if (View::exists('email')) {
+        return view('email', compact('email'));
+    } else {
+        return view('erro');
+    }
+});
+```
+
+## Templates
+
+Há a possibilidade de criar uma espécie de página "pai", onde irá ter o conteúdo padrão, aquele que não muda, para então ser reaproveitado não precisando escrever de novo aquelas mesmas linhas de código.
+
+Função `extends()` serve para extender uma página blade para outra, é como se o arquivo que usarmos essa função virasse um tipo de arquivo "filho" do arquivo "pai", herdando todo o código do blade principal para o blade "filho" como uma espécie de cópia da página. No caso, o arquivo layout "pai" está localizado na pasta layouts dentro da pasta de views. 
+
+Tip: Caso o arquivo estiver dentro de uma pasta, deve ser usado o "." em vez da "/" para poder acessar esse arquivo.
+
+```php
+@extends('layouts.app')
+```
+
+Função `@section('nome_do_yield')` é como se uma fosse uma sessão de códigos do arquivo "filho" que vai ser inserida no arquivo "pai". Necessita fechar aquela determinada sessão de código com `@endsection`.
+Caso for apenas uma string a ser inserida em vez de um bloco de código, você pode utilizar da seguinte maneira: `@section('nome_do_yield', 'string_a_inserir')` sem a necessidade de fechar a sessão com o `@endsection`.
+
+Função `@yield('nome_yield')` serve para linkar uma sessão de códigos de um tal arquivo "filho" com o arquivo "pai". 
+
+Sem essas funções os conteúdos inseridos na sessão no arquivo "filho" não serão exibidos, pois só usará os códigos presentes no arquivo "pai", porque não vai estar falando que tem códigos no arquivo "filho" que deve ser exibidos juntamente com os códigos do arquivo pai.
+Onde a função `@yield()` for usada, é aonde o código vai ser inserido.
+
+Outra possibilidade de utilização é:
+
+Uma arquivo pai contém o seguinte código:
+
+```php
+@section('mesclagem')
+    <p>Essa parte é do pai</p>
+@show
+```
+
+
+Outra página, a filho, contém o seguinte código:
+
+```php
+@extends('pai')
+
+@section('mesclagem')
+    <p>Essa parte é do filho</p>
+    @parent
+@endsection
+```
+
+Nesse caso, a sessão de códigos do arquivo pai vai ser exibida junto do arquivo filho, porém ao criar outra sessão com o mesmo nome no arquivo filho, todo o conteúdo que estava na sessão criada no pai vai ser deletado/substituído, para isso não ocorrer deve-se utilizar outra função do blade, a função `@parent`, que basicamente irá inserir todo o conteúdo definido na sessão criada no arquivo pai dentro da sessão do arquivo filho, juntamente com os códigos declarados nela, mesclando ambos os códigos.
+
+Tip: O conteúdo vai ser inserido exatamente aonde a função `@parent` for colocada.
+
+Tip-2: Caso a sessão antes criada não for criada novamente, o conteúdo dela se permanecerá inalterado, exibindo-a do mesmo jeito.
+
+Tip-3: Sem a função `@show` no final do bloco de códigos da sessão, o bloco não será exibido no arquivo filho.
