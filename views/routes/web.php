@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('filho');
+    return view('pagina');
 });
 
 Route::get('/primeiraview', function () {
@@ -45,3 +45,4 @@ Route::get('/email/{email}', function ($email) {
         return view('erro');
     }
 });
+

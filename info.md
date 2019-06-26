@@ -428,3 +428,20 @@ Tip: O conteúdo vai ser inserido exatamente aonde a função `@parent` for colo
 Tip-2: Caso a sessão antes criada não for criada novamente, o conteúdo dela se permanecerá inalterado, exibindo-a do mesmo jeito.
 
 Tip-3: Sem a função `@show` no final do bloco de códigos da sessão, o bloco não será exibido no arquivo filho.
+
+## Usando NPM para instalar o bootstrap localmente no projeto
+
+NPM é o nome reduzido de Node Package Manager (Gerenciador de Pacotes do Node).
+A NPM é duas coisas: Primeiro, e mais importante, é um repositório online para publicação de projetos de código aberto para o Node.js; segundo, ele é um utilitário de linha de comando que interage com este repositório online, que ajuda na instalação de pacotes, gerenciamento de versão e gerenciamento de dependências..
+
+Outro importante uso da NPM é o gerenciamento de dependências. Quando você tem um projeto Node com um arquivo package.json, você pode rodar o comando `npm install` na pasta raiz do seu projeto e a NPM vai isntalar todas as dependências listadas no package.json.
+
+No laravel, ao executar o comando `npm install`, ele irá instalar todas as dependências necessárias para rodar o bootstrap por exemplo. Depois disso, ao executar o comando `npm run development` irá compilar os arquivos do bootstrap tudo em um único arquivo, gerando um arquivo css e outro javacript na pasta public contendo todo o código necessário para utilizar o bootstrap.
+
+Para linkar esses arquivos com uma página HTML você pode utilizar duas maneiras:
+
+1ª: `<link rel="stylesheet" href="{{ asset('css/app.css') }}">`
+Utilizando a função `asset()` com o caminho do arquivo localizado dentro da pasta public.
+
+2ª `<script src="{{ URL::to('js/app.js') }}" type="text/javascript"></script>`
+Utilizando o método estático `to()` da classe URL com o caminho do arquivo dentro da pasta public.
