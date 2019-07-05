@@ -630,7 +630,7 @@ Tip-2: Se o valor da `$var` não for nenhum dos cases, por padrão, ele sempre v
     @endswitch
 ```
 
-##Laços de repetições
+## Laços de repetições (loops)
 
 O Blade do Laravel também possui os laços for, foreach e while.
 
