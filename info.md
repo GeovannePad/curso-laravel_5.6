@@ -445,3 +445,249 @@ Utilizando a função `asset()` com o caminho do arquivo localizado dentro da pa
 
 2ª `<script src="{{ URL::to('js/app.js') }}" type="text/javascript"></script>`
 Utilizando o método estático `to()` da classe URL com o caminho do arquivo dentro da pasta public.
+
+## Componentes e includes
+
+Componentes é uma forma do Laravel de separar os códigos, dando uma organização maior, por exemplo, separar o código da navbar do resto do código da landing page com o intuito de serem reutilizados. 
+
+No caso dos componentes, para criar um você pode simplesmente criar uma pasta chamada "components" dentro da pasta views do seu projeto, e lá dentro você criará seus componentes. O arquivo do componente segue a mesma extensão das views, "nome_do_componente.blade.php".
+
+Método para chamar um componente para uma view.
+Sempre use "." em vez de "/" para especificar o caminho de algum arquivo no blade.
+
+```php
+@component('caminho_do_componente')
+
+@endcomponent
+```
+
+Os componentes também possuem os chamados slots, que é uma forma de passar parâmetros para os componentes através da view em que eles estão sendo inseridos.
+
+Sintaxe de um componente utilizando slots.
+Código inserido na view em que o componente está sendo utilizado.
+
+```php
+  @component('caminho_do_componente') 
+
+    @slot('slot1')
+      <strong>Conteúdo do slot 1</strong>
+    @endslot
+
+    @slot('slot2')
+      <strong>Conteúdo do slot 2</strong>
+    @endslot
+
+  @endcomponent
+```
+
+```php
+<div class="alert alert-danger" role="alert">
+  {{$slot1}}
+</div>
+
+<div class="alert alert-success" role="alert">
+  {{$slot2}}
+</div>
+```
+
+Para acessar essas informações diretamente no arquivo do componente, cada slot deve ser tratado como uma variável, por exemplo, no exemplo acima, para acessar os dados que estão contidos dentro do slot1 deve ser utilizado a variável `$slot1` no arquivo do componente. Assim também vale para o slot2, que usará a variável `$slot2`, ou seja, o nome atribuído ao slot na hora de especificar o componente deve ser o nome da variável para acessar os dados desse mesmo slot.
+
+Tudo passado fora da função `@slot` dentro de um componente será atribuído a variável padrão `$slot`, para então ser acessado.
+
+Também há a possibilidade de passar informações pelo segundo parâmetro da função `@component` utilizando um array associativo.
+
+
+Os includes são utilizados para você adicionar subviews, peças maiores de código que você resolveu separar da view principal por algum motivo. Vamos supor que sua view principal estava ficando muito grande, então você resolveu quebrar essa view em outras partes, mas que não tem o intuito de serem reusáveis, ou seja, essas partes você vai utilizar em um único lugar.
+
+Todas as variáveis disponíveis na view principal, também seram disponíveis na sub-view incluída.
+
+Também podem ser passados parâmetros nos includes, utilizando um array associativo. 
+
+```php
+@include('view.name', ['some' => 'data'])
+```
+
+Quando determinada view usada no include não existir, o Laravel irá retornar um erro.
+
+Para mais informações sobre as funções do include, use o link abaixo.
+[Include Sub-views](https://laravel.com/docs/5.8/blade#including-sub-views)
+
+## Criando uma chamada costumizada para um componente (aliases)
+
+Em vez de usar `@component` para chamar um componente, podemos fazer com que o Laravel registre um componente com uma aliase, para posteriormente ser chamado.
+
+Para isso, devemos ir na pasta App -> Providers e abrir o arquivo AppServiceProvider.php, nesse arquivo existe uma função chamada boot. Nela, colocaremos o código abaixo
+
+E para registrar um aliase a um componente usamos a classe "Blade" com o seguinte código: `Blade::component('caminho_do_componente', 'aliase');`.
+
+Tip: Um aliase é a mesma coisa que um apelido.
+
+Dessa forma, em vez de usarmos:
+
+```php
+    @component('caminho_do_componente', ['foo'=>'data', ...])
+
+    @endcomponent
+```
+
+Usaremos o aliase atribuído na função boot, no lugar do "component":
+Nesse caso não é preciso passar o caminho do componente, pois já fora especificado, mas ainda é possível passar os parâmetros em forma de array associativo.
+
+```php
+    @aliase(['foo'=>'data', ...])
+
+    @endaliase
+```
+
+## Comparações em views
+
+Utilizando o blade também temos como fazer comparações em views, como if, else if.
+Eles possuem a mesma estrutura do if comum do php, porém deve começar sempre por "@".
+
+Utilizamos:
+Caso a comparação nos parênteses for verdadeira(true) vai retornar o bloco antes do "@else", caso contrário, o bloco depois do "@else".
+
+Tip: Também pode utilizar funções do php dentro do parênteses de comparação.
+Tip: Não podemos colocar código puro php dentro dos ifs do blade, devemos colocar apenas código HTML para ser exibido, caso queira colocar código php dentro dos if utilize o "@php - @endphp" ou utilize "{{}}".
+
+
+```php
+    @if()
+        <h1> Mensagem a exibir </h1>
+    @else
+        <h1> Mensagem a exibir </h1>
+    @endif
+```
+
+Também há a função "@empty", que basicamente, como o nome diz, verifica se determinada variável, sendo um array ou não, contém algum valor ou não.
+
+Nesse caso, ele vai verificar se a variável $foo possui algum valor ou não. Retornando todo o código HTML ou PHP(usando o necessário para exibir) dentro de seu bloco.
+
+```php
+    @empty($foo)
+        <h1>Mensagem a exibir se não possuir nada dentro de $foo</h1>
+    @endempty
+```
+
+## Método HasSection
+
+Método hasSection serve para verificar se determinada section no blade está definida ou não, por exemplo, ao extender um view layout para uma sub-view, precisamos usar o "@yield" e "@section" para mesclar os conteúdos das duas views e exibi-lo, porém se determinado "@yield" não ter nenhuma "@section" atribuido a ele, mesmo assim irá imprimir todo o código da página, as vezes não sendo necessário.
+
+Por exemplo:
+
+Nesse exemplo, o método hasSection irá verificar se a section 'minha_secao_produtos' existe, caso existir ele irá imprimir tudo antes do "@else" juntamente do "@yield" para receber os dados, caso não, ele vai imprimir tudo localizado depois do "@else", não imprimindo nada relacionado acima do "@else". Funciona basicamente como um if de seções, por isso também se usa o "@endif" para fechar o bloco.
+
+```php
+  @hasSection ('minha_secao_produtos')
+    <div class="card" style="width: 18rem">
+      <div class="card-body">
+        <h5 class="card-title">Produtos</h5>
+        <p class="card-text">
+          @yield('minha_secao_produtos')
+        </p>
+  
+        <a href="#" class="card-link">Informações</a>
+        <a href="#" class="card-link">Ajuda</a>
+      </div>
+    </div>
+  @else
+    <h1>Não existe essa seção</h1> 
+  @endif
+
+```
+
+## Switch Case
+
+Assim como no php comum, o Laravel também possui a estrutura switch, e segue basicamente a mesma sintaxe do php, começando em "@switch" e sempre terminando em "@endswitch".
+
+Seguindo o mesmo padrão do php, o switch vai verificar determinada `$var` e depois verificar dentro de todos os seus cases, se algum deles bater com o valor dentro da variável, ele vai executar o bloco de código desse determinado case, parando sempre no "@brake".
+
+Tip: Se no final de cada case não possuir o "@brake" ele vai executar todos os outros cases abaixo desse case que não possuir o "@brake".
+
+Tip-2: Se o valor da `$var` não for nenhum dos cases, por padrão, ele sempre vai parar no bloco de código depois do "@default".
+
+```php
+    @switch($var)
+        @case(1)
+
+          code...
+
+            @break
+        @case(2)
+
+          code...
+
+            @break
+        @case(3)
+
+          code...
+          
+            @break
+        @default
+
+          code...
+
+    @endswitch
+```
+
+##Laços de repetições
+
+O Blade do Laravel também possui os laços for, foreach e while.
+
+Seguindo a mesma sintaxe do php, porém sempre usando o "@" antes dos nomes dos loops cases:
+
+```php
+@for ($i = 0; $i < 10; $i++)
+    The current value is {{ $i }}
+@endfor
+
+@foreach ($users as $user)
+    <p>This is user {{ $user->id }}</p>
+@endforeach
+
+@forelse ($users as $user)
+    <li>{{ $user->name }}</li>
+@empty
+    <p>No users</p>
+@endforelse
+
+@while (true)
+    <p>I'm looping forever.</p>
+@endwhile
+```
+
+No caso do foreach para array associativo, deve ser utilizado os "[]" com o nome/número do index depois da variável do array para acessar o valor de tal index. Porém na maioria dos casos, vai ser utilizado array de objetos, então você deve utilizar a "->" seguida do nome do index do array.
+
+O forelse é uma estrutura que basicamente, se possuir dados dentro do array, ele vai exibi-los(executando o primeiro bloco de código) ou caso não existir, ele vai executar o segundo bloco de código, mostrando uma mensagem ou algo parecido(no caso, o bloco depois do "@empty"). No forelse também pode-se utilizar array associativo/objetos.
+
+### Atributos dos loops
+
+Nos loops do Blade existe um array de objetos `$loop` que nos fornece diversas informações em relação ao loop, como por exemplo.
+
+`$loop->first`: Utiliza para pegar a primeira interação do loop.
+
+Por exemplo, se for a primeira interação, ele imprimirá o texto "(primeiro)".
+```php
+  @if ($loop->first)
+    (primeiro)
+  @endif
+```
+
+`$loop->last`: Diferente do first, este pega a última interação do loop.
+
+Se for a última interação do loop, ele imprimirá o texto "(ultimo)".
+```php
+  @if ($loop->last)
+    (ultimo)
+  @endif
+```
+
+`$loop->index`: Imprime o index da atual interação do loop.
+
+`$loop->count`: Conta a quantidade de interações que podemos ter em determinado loop.
+
+`$loop->remaining`: Mostra a quantidade, em relação a cada interação, do quanto falta para finalizar todas as interações do loop.
+
+`$loop->iteration`: Imprime o index da atual interação do loop.
+
+Para mais funções da variável loop -> [Variável Loop](https://laravel.com/docs/5.8/blade#the-loop-variable)
